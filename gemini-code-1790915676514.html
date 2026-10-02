@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시험이지 (Exam Easy) - 시험 & 수행평가 스트레스 해결소</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8FAFC;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px -10px rgba(79, 70, 229, 0.15);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+        .pulse-btn {
+            animation: pulse-ring 2.5s infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header Section -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center gap-2">
+            <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">시험이지 <span class="text-indigo-600 text-sm font-semibold">Exam Easy</span></h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">수행평가·중간·기말고사 솔루션 센터</p>
+                </div>
+            </div>
+
+            <!-- Header Action Buttons -->
+            <div class="flex items-center gap-2">
+                <!-- 나만의 공부법 만들기 버튼 -->
+                <button onclick="openCustomPlanModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm transition-all shadow-md flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen-to-square text-amber-300"></i>
+                    <span>나만의 공부법 만들기</span>
+                </button>
+
+                <!-- 나에게 맞는 공부법 찾기 버튼 -->
+                <button onclick="openQuizModal()" class="pulse-btn bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:from-indigo-700 hover:to-pink-600 text-white font-bold px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm transition-all shadow-md flex items-center gap-1.5 border border-white/20">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+                    <span>공부법 찾기</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-indigo-50/70 via-slate-50 to-slate-50 py-10 px-4 text-center">
+        <div class="max-w-3xl mx-auto">
+            <span class="inline-block bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full mb-3 shadow-sm">
+                😱 "수행평가에 시험까지... 멘붕일 때 보세요!"
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight mb-4">
+                시험 부담감을 한방에 해결하는<br>
+                <span class="text-indigo-600">학생 맞춤형 솔루션 12가지</span>
+            </h2>
+            <p class="text-slate-600 text-sm sm:text-base mb-8 leading-relaxed">
+                2달 여유 플랜부터 벼락치기, 수행평가 방어전, 슬럼프 탈출법까지!<br>기존 방법을 참고하거나 <b>'나만의 공부법 만들기'</b>로 나만의 맞춤 전략을 카드 형태로 추가해보세요.
+            </p>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-2" id="filter-buttons">
+                <button onclick="filterCards('all')" class="filter-btn active bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium text-sm transition shadow-sm">전체 보기</button>
+                <button onclick="filterCards('fast')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-medium text-sm transition">⚡ 벼락치기파</button>
+                <button onclick="filterCards('slow')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-medium text-sm transition">🗓️ 완벽·여유파</button>
+                <button onclick="filterCards('mental')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-medium text-sm transition">🧠 멘탈·수행평가파</button>
+                <button onclick="filterCards('health')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-medium text-sm transition">🌿 습관·체력파</button>
+                <button onclick="filterCards('custom')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2 rounded-xl font-medium text-sm transition">✨ 내가 만든 공부법</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Section -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cards-container">
+            <!-- Dynamic Cards Inserted Here via JS -->
+        </div>
+    </main>
+
+    <!-- Solution Detail Modal View -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-start">
+                <div>
+                    <span id="modal-badge" class="text-xs font-bold px-2.5 py-1 rounded-md bg-indigo-100 text-indigo-700 inline-block mb-2">카테고리</span>
+                    <h3 id="modal-title" class="text-2xl font-bold text-slate-900">솔루션 제목</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl p-1 leading-none">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">한 줄 요약</h4>
+                    <p id="modal-summary" class="text-slate-700 font-medium text-base bg-slate-50 p-3 rounded-lg border border-slate-100 leading-relaxed"></p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">상세 실행 가이드</h4>
+                    <ul id="modal-steps" class="space-y-2.5 text-slate-600 text-sm list-disc pl-5 leading-relaxed"></ul>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-100">
+                        <h5 class="text-xs font-bold text-emerald-800 mb-1">👍 이런 학생에게 추천</h5>
+                        <p id="modal-pros" class="text-xs text-emerald-700 leading-relaxed"></p>
+                    </div>
+                    <div class="bg-rose-50 p-3.5 rounded-xl border border-rose-100">
+                        <h5 class="text-xs font-bold text-rose-800 mb-1">⚠️ 주의사항</h5>
+                        <p id="modal-cons" class="text-xs text-rose-700 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                <button id="modal-delete-btn" onclick="deleteCustomPlan()" class="text-rose-600 hover:text-rose-700 text-xs font-bold hidden">
+                    <i class="fa-solid fa-trash mr-1"></i> 삭제하기
+                </button>
+                <button onclick="closeModal()" class="ml-auto bg-slate-800 hover:bg-slate-900 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition">확인 완료</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Plan Modal (나만의 공부법 만들기) -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">나만의 공부법 만들기</h3>
+                </div>
+                <button onclick="closeCustomPlanModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+            </div>
+            <form onsubmit="saveCustomPlan(event)" class="p-6 overflow-y-auto custom-scrollbar space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">공부법 제목 *</label>
+                    <input type="text" id="custom-title" placeholder="예: 매일 10분 영단어 뽀개기 플랜" required class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">카테고리 *</label>
+                    <select id="custom-category" required class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+                        <option value="fast">⚡ 벼락치기파</option>
+                        <option value="slow">🗓️ 완벽·여유파</option>
+                        <option value="mental">🧠 멘탈·수행평가파</option>
+                        <option value="health">🌿 습관·체력파</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">한 줄 요약 *</label>
+                    <input type="text" id="custom-summary" placeholder="이 공부법을 한 문장으로 핵심만 설명해보세요." required class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">실행 단계 (줄바꿈으로 구분) *</label>
+                    <textarea id="custom-steps" rows="3" placeholder="1단계: 하루 30분 집중하기&#10;2단계: 핵심 내용 백지 정리&#10;3단계: 주말에 오답노트 작성" required class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">추천 대상</label>
+                        <input type="text" id="custom-pros" placeholder="예: 짧게 집중하는 사람" class="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">주의사항</label>
+                        <input type="text" id="custom-cons" placeholder="예: 미루면 효과 없음" class="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition text-sm shadow-md">
+                        나만의 공부법 등록하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quiz Modal (나에게 맞는 공부법 찾기) -->
+    <div id="quiz-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeQuizModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            <div id="quiz-content">
+                <div class="text-center mb-6">
+                    <div class="inline-block p-3 bg-indigo-50 text-indigo-600 rounded-full mb-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">나에게 맞는 공부법 찾기</h3>
+                    <p class="text-xs text-slate-500 mt-1">질문 3개에 답하고 나에게 딱 맞는 전략을 추천받으세요!</p>
+                </div>
+                
+                <!-- Q1 -->
+                <div id="quiz-step-1" class="space-y-3">
+                    <p class="font-bold text-slate-800 text-sm">Q1. 현재 시험까지 남은 기간은 얼마나 되나요?</p>
+                    <button onclick="nextQuiz(1, 'fast')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">🚨 D-14 이하 (벼락치기가 시급함)</button>
+                    <button onclick="nextQuiz(1, 'slow')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">📅 D-30 이상 (여유 있게 계획 수립 가능)</button>
+                </div>
+
+                <!-- Q2 -->
+                <div id="quiz-step-2" class="space-y-3 hidden">
+                    <p class="font-bold text-slate-800 text-sm">Q2. 지금 나를 가장 힘들게 만드는 것은?</p>
+                    <button onclick="nextQuiz(2, 'mental')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">🤯 수행평가 폭탄과 시험 스트레스</button>
+                    <button onclick="nextQuiz(2, 'health')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">🥱 체력 저하, 졸음, 집중력 저하</button>
+                    <button onclick="nextQuiz(2, 'study')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">📚 막대한 시험 범위와 막막함</button>
+                </div>
+
+                <!-- Q3 -->
+                <div id="quiz-step-3" class="space-y-3 hidden">
+                    <p class="font-bold text-slate-800 text-sm">Q3. 평소 나의 공부 스타일은 어떤가요?</p>
+                    <button onclick="nextQuiz(3, 'solo')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">🎧 혼자 집중해서 정리하며 공부하는 편</button>
+                    <button onclick="nextQuiz(3, 'together')" class="w-full text-left p-3.5 border rounded-xl hover:bg-indigo-50 hover:border-indigo-300 text-sm text-slate-700 transition">👥 친구들과 서로 물어보거나 환경의 도움이 필요함</button>
+                </div>
+
+                <!-- Result -->
+                <div id="quiz-result" class="hidden text-center py-4 space-y-4">
+                    <div class="inline-block p-4 bg-indigo-50 rounded-full text-indigo-600 mb-1">
+                        <i class="fa-solid fa-bullseye text-3xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">맞춤 추천 솔루션</span>
+                        <h4 id="quiz-result-title" class="text-xl font-extrabold text-slate-900 mt-2"></h4>
+                    </div>
+                    <button onclick="applyQuizResult()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition text-sm shadow-md">해당 솔루션 바로보기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400">
+        <p>© Exam Easy. 대한민국 모든 학생들의 시험 성공과 멘탈 케어를 응원합니다!</p>
+    </footer>
+
+    <script>
+        // Default 12 Solutions Data
+        const defaultSolutions = [
+            {
+                id: 1,
+                category: "fast",
+                categoryName: "⚡ 벼락치기파",
+                title: "2주 수면 조절 벼락치기 플랜",
+                summary: "급한 불부터 끄자! 시험 직전 수면과 집중 시간을 효율적으로 배치하는 단기 전법",
+                icon: "fa-bolt",
+                color: "amber",
+                steps: [
+                    "1~3일차: 주요 과목(국/영/수) 핵심 개념 및 교과서 날개 문제 파악",
+                    "4~10일차: 기출문제 풀이 및 자주 틀리는 오답 및 핵심 개념 집중 암기",
+                    "11~14일차: 수면시간을 5시간으로 일정하게 고정하고 암기과목 총동원",
+                    "시험 전날: 새벽 밤샘은 금물! 최소 4시간 이상 수면을 취해 뇌 기능 유지"
+                ],
+                pros: "단기간에 집중력을 몰아붙여 효율을 높임",
+                cons: "시험 후 피로도가 크며 장기 기억 전환은 어려움"
+            },
+            {
+                id: 2,
+                category: "slow",
+                categoryName: "🗓️ 완벽·여유파",
+                title: "2달 장기 분산 학습 플랜",
+                summary: "시험과 수행평가가 겹쳐도 끄떡없는 초장기 여유 학습 전략",
+                icon: "fa-calendar-check",
+                color: "indigo",
+                steps: [
+                    "D-60~D-40: 매일 수업 시간에 배운 핵심 내용을 당일 20분간 복습",
+                    "D-40~D-20: 수행평가 제출물 미리 완료 및 주요 시험 과목 1회독",
+                    "D-20~D-7: 오답노트 작성 및 부족한 암기 과목 2~3회독",
+                    "D-7~D-DAY: 하루 7-8시간 충분한 수면을 유지하며 실전 문제풀이 감각 유지"
+                ],
+                pros: "시험 기간 스트레스가 적고 규칙적인 생활 가능",
+                cons: "초반 꾸준한 의지가 없으면 계획이 흐지부지되기 쉬움"
+            },
+            {
+                id: 3,
+                category: "mental",
+                categoryName: "🧠 멘탈·수행평가파",
+                title: "수행평가 + 지필고사 우선순위 커트",
+                summary: "모든 걸 완벽히 하려다 망하지 말자! 감점 폭을 최소화하는 배점 전략",
+                icon: "fa-layer-group",
+                color: "blue",
+                steps: [
+                    "과목별 반영 비율(%)을 파악하여 배점이 높은 항목에 시간의 70% 집중",
+                    "수행평가는 '완벽한 100점'보다 '기한 준수 및 감점 요소 제거'를 목표로 빠르게 완성",
+                    "시간이 부족하다면 비주요 과목은 핵심 요약집 위주로 최소 회독",
+                    "멘탈 유지법: '완벽하지 않아도 제출하고 완수하는 것이 승리다'라고 되뇌기"
+                ],
+                pros: "시간 대비 최선의 평균 점수(가성비)를 얻고 멘탈을 지킴",
+                cons: "전 과목 만점을 노리는 학생에겐 부적합할 수 있음"
+            },
+            {
+                id: 4,
+                category: "health",
+                categoryName: "🌿 습관·체력파",
+                title: "포모도로 25/5 공부법 & 컨디션 케어",
+                summary: "졸리고 집중력이 떨어지는 학생을 위한 체력 존버형 공부 스케줄",
+                icon: "fa-clock",
+                color: "emerald",
+                steps: [
+                    "25분 집중 공부 + 5분 완전 휴식(스마트폰 금지)을 1세트로 4회 반복",
+                    "시험 2주 전부터 낮잠은 최대 20분으로 제한하고 밤 12시 이전 취침",
+                    "고카페인 음료 대신 미지근한 물 섭취 및 틈틈이 기지개/스트레칭",
+                    "하루 중 가장 머리가 잘 돌아가는 시간대(골든 타임)를 파악해 고난도 과목 배치"
+                ],
+                pros: "피로 누적이 적고 시험 당일 최상의 컨디션 유지 가능",
+                cons: "절대적인 공부 총량이 적다고 느껴질 수 있음"
+            },
+            {
+                id: 5,
+                category: "fast",
+                categoryName: "⚡ 벼락치기파",
+                title: "3일 단기 암기 과목 백지 복습법",
+                summary: "역사, 사회, 과학 등 암기 과목을 초단기에 씹어먹는 백지 테스트",
+                icon: "fa-brain",
+                color: "amber",
+                steps: [
+                    "1일차: 교과서 목차 및 소제목을 보며 전체 흐름 빠른 속도로 파악",
+                    "2일차: 핵심 개념 암기 후 빈 종이에 생각나는 내용을 모두 써보는 백지 테스트",
+                    "3일차: 빈출 기출 문제 및 족보 중심으로 문제 풀며 틀린 부분 재암기",
+                    "시험 당일 아침: 내가 작성했던 오답/백지 노트의 빈칸만 집중 체크"
+                ],
+                pros: "암기 과목 점수를 단기간에 급상승시킬 수 있음",
+                cons: "휘발성이 강해 시험이 끝나면 머릿속에서 잘 기억나지 않음"
+            },
+            {
+                id: 6,
+                category: "mental",
+                categoryName: "🧠 멘탈·수행평가파",
+                title: "스터디 메이트 & 질문 도장깨기",
+                summary: "혼자 공부하면 자꾸 딴짓하는 학생을 위한 강제 환경 설정",
+                icon: "fa-users",
+                color: "purple",
+                steps: [
+                    "친구 2~3명과 목표 공부 시간을 공유하고 착석 인증 스터디 그룹 생성",
+                    "모르는 문제는 서로 설명해주기 (남에게 설명할 수 있어야 진짜 내 지식)",
+                    "쉬는 시간마다 교무실을 찾아가 선생님께 모르는 부분 파고들기",
+                    "수행평가 피드백을 서로 주고받으며 놓친 감점 포인트 보완"
+                ],
+                pros: "외롭지 않고 외부 강제성이 생겨 공부 몰입도가 높아짐",
+                cons: "친구들과 잡담으로 빠질 위험이 있어 절제력 필요"
+            },
+            {
+                id: 7,
+                category: "slow",
+                categoryName: "🗓️ 완벽·여유파",
+                title: "교과서 5회독 회독법 (정석의 힘)",
+                summary: "출제자의 의도를 완벽히 파악하여 고득점을 보장하는 정석 복습법",
+                icon: "fa-book-open",
+                color: "indigo",
+                steps: [
+                    "1회독: 소설책 읽듯 전체적인 내용 가볍게 읽기",
+                    "2회독: 주요 개념 및 선생님이 강조한 부분 형광펜 밑줄 치며 읽기",
+                    "3회독: 이해가 안 되는 부분과 암기 항목을 노트에 따로 정리하며 읽기",
+                    "4~5회독: 문제집을 풀고 틀린 개념을 교과서로 다시 돌아와 단권화"
+                ],
+                pros: "기초가 튼튼해지고 서술형 문제나 변형 문제에 완벽 대비 가능",
+                cons: "시간이 많이 소요되므로 시험 직전 시작하기엔 부담스러움"
+            },
+            {
+                id: 8,
+                category: "health",
+                categoryName: "🌿 습관·체력파",
+                title: "스마트폰 강제 격리 & 도파민 다이어트",
+                summary: "책상에만 앉으면 숏폼을 보게 되는 학생을 위한 집중 환경 구축",
+                icon: "fa-mobile-screen-button",
+                color: "emerald",
+                steps: [
+                    "공부 시작 전 스마트폰을 부모님께 맡기거나 다른 방에 넣어두기",
+                    "공부용 타이머는 스마트폰 앱 대신 실물 스톱워치/타임타이머 사용",
+                    "유튜브, SNS 등 자극적인 도파민 콘텐츠는 시험 끝날 때까지 앱 삭제",
+                    "휴식 시간에는 SNS 대신 창문 밖을 보거나 5분 산책하기"
+                ],
+                pros: "딴짓하는 시간이 획기적으로 줄어들어 순수 공부 시간 폭발적 증가",
+                cons: "초반 2~3일간 휴대폰 금단현상으로 불안할 수 있음"
+            },
+            {
+                id: 9,
+                category: "mental",
+                categoryName: "🧠 멘탈·수행평가파",
+                title: "시험 불안감 극복 & 마인드 컨트롤",
+                summary: "시험 때만 되면 긴장해서 실력 발휘를 못 하는 학생을 위한 멘탈 케어",
+                icon: "fa-heart-pulse",
+                color: "purple",
+                steps: [
+                    "시험 전날 밤: '내가 안 배운 건 남들도 모른다'는 긍정적 주문 외우기",
+                    "시험 시작 5분 전: 4초간 숨을 마시고 7초간 참은 뒤 8초간 천천히 내쉬는 4-7-8 호흡법",
+                    "실수했을 때: 이전 과목 답안 비교하지 말고 즉시 다음 과목에 집중",
+                    "목표 점수를 너무 높게 잡기보다 '아는 문제는 틀리지 않는다'에 집중"
+                ],
+                pros: "시험 당일 실수율을 줄이고 제실력을 100% 발휘하도록 도움",
+                cons: "실제 공부량이 바탕이 되어야 효과가 배가 됨"
+            },
+            {
+                id: 10,
+                category: "fast",
+                categoryName: "⚡ 벼락치기파",
+                title: "1일 전 야간 응급 복습 솔루션",
+                summary: "시험 바로 전날 night-before! 당장 내일 시험일 때의 마지막 방어선",
+                icon: "fa-triangle-exclamation",
+                color: "amber",
+                steps: [
+                    "선생님이 수업 중 '이거 시험에 나온다'고 강조했던 내용 최우선 체크",
+                    "교과서 단원 평가 문제 및 대단원 정리의 정답 확인 후 완벽 암기",
+                    "프린트물과 오답 노트만 모아서 최소 2번 빠르게 훑어보기",
+                    "새벽 2시 이전에는 무조건 취침하여 최소 4시간 수면 확보"
+                ],
+                pros: "시험 전날 절박함으로 최적의 단기 집중력 발휘",
+                cons: "벼락치기 특성상 높은 고득점(100점)을 장담하긴 어려움"
+            },
+            {
+                id: 11,
+                category: "slow",
+                categoryName: "🗓️ 완벽·여유파",
+                title: "기출문제 역공학 분석법",
+                summary: "우리 학교 출제 스타일을 미리 간파하여 똑똑하게 공부하는 전략",
+                icon: "fa-magnifying-glass-chart",
+                color: "indigo",
+                steps: [
+                    "최근 2~3개년 우리 학교 기출문제를 구해서 출제 경향 분석",
+                    "객관식/서술형에서 자주 출제되는 파트와 문제 유형 분류",
+                    "교과서와 기출문제를 대조하며 선생님의 출제 스타일(지문 변형 여부 등) 파악",
+                    "변형되어 나올법한 고난도 예상 문제를 직접 만들어 풀기"
+                ],
+                pros: "출제될 확률이 높은 핵심 위주로 효율적인 공부 가능",
+                cons: "기출문제를 구하기 어려운 환경일 경우 적용하기 힘듦"
+            },
+            {
+                id: 12,
+                category: "health",
+                categoryName: "🌿 습관·체력파",
+                title: "공부 슬럼프 & 식곤증 탈출 전략",
+                summary: "시험 준비 중 무기력해지고 공부하기 싫을 때 뇌를 다시 깨우는 법",
+                icon: "fa-battery-half",
+                color: "emerald",
+                steps: [
+                    "점심/저녁 식사는 과식하지 않고 70% 정도만 채워 식곤증 예방",
+                    "공부가 너무 하기 싫을 땐 딱 '5분만 책상에 앉아보기' 법칙 적용",
+                    "집, 독서실, 카페, 도서관 등 공부 장소를 주기적으로 변경해 신선함 주기",
+                    "가벼운 산책이나 스트레칭으로 뇌에 산소 공급해 집중력 회복"
+                ],
+                pros: "무기력한 슬럼프 기간을 짧게 단축하고 공부에 재진입 가능",
+                cons: "장소 변경이 자주 일어나면 이동 시간이 다소 발생할 수 있음"
+            }
+        ];
+
+        let solutions = [];
+        let currentFilter = 'all';
+        let currentDetailId = null;
+
+        // Load custom plans from localStorage
+        function loadSolutions() {
+            const savedCustom = JSON.parse(localStorage.getItem('custom_exam_solutions') || '[]');
+            solutions = [...defaultSolutions, ...savedCustom];
+        }
+
+        // Render Cards Function
+        function renderCards(filter = 'all') {
+            currentFilter = filter;
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+
+            let filteredData = [];
+            if (filter === 'all') {
+                filteredData = solutions;
+            } else if (filter === 'custom') {
+                filteredData = solutions.filter(s => s.isCustom);
+            } else {
+                filteredData = solutions.filter(s => s.category === filter);
+            }
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <i class="fa-regular fa-folder-open text-4xl mb-3 block"></i>
+                        <p class="text-sm">등록된 공부법이 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm card-hover flex flex-col justify-between cursor-pointer relative";
+                card.onclick = () => openModal(item.id);
+
+                const customBadge = item.isCustom ? `<span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold ml-2">MY</span>` : '';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center">
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-${item.color}-100 text-${item.color}-700">
+                                    ${item.categoryName}
+                                </span>
+                                ${customBadge}
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">${item.title}</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-4 line-clamp-2">${item.summary}</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs text-indigo-600 font-semibold">
+                        <span>상세 실행법 보기</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Filter Functionality
+        function filterCards(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-700');
+            });
+
+            if (event && event.target) {
+                event.target.classList.remove('bg-white', 'text-slate-700');
+                event.target.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+            }
+
+            renderCards(category);
+        }
+
+        // Detail Modal Controls
+        function openModal(id) {
+            currentDetailId = id;
+            const item = solutions.find(s => s.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-badge').innerText = item.categoryName;
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-summary').innerText = item.summary;
+            document.getElementById('modal-pros').innerText = item.pros || "누구나 적용 가능";
+            document.getElementById('modal-cons').innerText = item.cons || "특별한 부작용 없음";
+
+            const stepsContainer = document.getElementById('modal-steps');
+            stepsContainer.innerHTML = item.steps.map(step => `<li class="mb-1">${step}</li>`).join('');
+
+            const deleteBtn = document.getElementById('modal-delete-btn');
+            if (item.isCustom) {
+                deleteBtn.classList.remove('hidden');
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        // Custom Plan Modal Controls
+        function openCustomPlanModal() {
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeCustomPlanModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function saveCustomPlan(e) {
+            e.preventDefault();
+            const title = document.getElementById('custom-title').value.trim();
+            const category = document.getElementById('custom-category').value;
+            const summary = document.getElementById('custom-summary').value.trim();
+            const stepsText = document.getElementById('custom-steps').value.trim();
+            const pros = document.getElementById('custom-pros').value.trim();
+            const cons = document.getElementById('custom-cons').value.trim();
+
+            const steps = stepsText.split('\n').filter(line => line.trim() !== '');
+
+            const categoryNames = {
+                fast: "⚡ 벼락치기파",
+                slow: "🗓️ 완벽·여유파",
+                mental: "🧠 멘탈·수행평가파",
+                health: "🌿 습관·체력파"
+            };
+
+            const categoryColors = {
+                fast: "amber",
+                slow: "indigo",
+                mental: "purple",
+                health: "emerald"
+            };
+
+            const newPlan = {
+                id: Date.now(),
+                category: category,
+                categoryName: categoryNames[category],
+                title: title,
+                summary: summary,
+                icon: "fa-star",
+                color: categoryColors[category],
+                steps: steps,
+                pros: pros || "나만을 위한 맞춤 전략",
+                cons: cons || "본인의 의지 필요",
+                isCustom: true
+            };
+
+            const savedCustom = JSON.parse(localStorage.getItem('custom_exam_solutions') || '[]');
+            savedCustom.push(newPlan);
+            localStorage.setItem('custom_exam_solutions', JSON.stringify(savedCustom));
+
+            loadSolutions();
+            closeCustomPlanModal();
+            e.target.reset();
+            renderCards(currentFilter);
+        }
+
+        function deleteCustomPlan() {
+            if (!currentDetailId) return;
+            if (confirm("이 공부법을 삭제하시겠습니까?")) {
+                let savedCustom = JSON.parse(localStorage.getItem('custom_exam_solutions') || '[]');
+                savedCustom = savedCustom.filter(item => item.id !== currentDetailId);
+                localStorage.setItem('custom_exam_solutions', JSON.stringify(savedCustom));
+
+                closeModal();
+                loadSolutions();
+                renderCards(currentFilter);
+            }
+        }
+
+        // Quiz Logic
+        let quizAnswers = {};
+
+        function openQuizModal() {
+            quizAnswers = {};
+            document.getElementById('quiz-step-1').classList.remove('hidden');
+            document.getElementById('quiz-step-2').classList.add('hidden');
+            document.getElementById('quiz-step-3').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.remove('hidden');
+        }
+
+        function closeQuizModal() {
+            document.getElementById('quiz-modal').classList.add('hidden');
+        }
+
+        function nextQuiz(step, answer) {
+            quizAnswers[step] = answer;
+            if (step === 1) {
+                document.getElementById('quiz-step-1').classList.add('hidden');
+                document.getElementById('quiz-step-2').classList.remove('hidden');
+            } else if (step === 2) {
+                document.getElementById('quiz-step-2').classList.add('hidden');
+                document.getElementById('quiz-step-3').classList.remove('hidden');
+            } else if (step === 3) {
+                document.getElementById('quiz-step-3').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                calculateQuizResult();
+            }
+        }
+
+        function calculateQuizResult() {
+            let resultId = 1;
+
+            if (quizAnswers[1] === 'fast' && quizAnswers[2] === 'study') resultId = 5;
+            else if (quizAnswers[1] === 'fast') resultId = 1;
+            else if (quizAnswers[1] === 'slow' && quizAnswers[3] === 'solo') resultId = 7;
+            else if (quizAnswers[1] === 'slow') resultId = 2;
+            else if (quizAnswers[2] === 'health') resultId = 8;
+            else if (quizAnswers[2] === 'mental' && quizAnswers[3] === 'together') resultId = 6;
+            else if (quizAnswers[2] === 'mental') resultId = 3;
+            else resultId = 4;
+
+            selectedQuizResultId = resultId;
+            const item = solutions.find(s => s.id === resultId);
+            document.getElementById('quiz-result-title').innerText = item ? item.title : "맞춤 플랜";
+        }
+
+        function applyQuizResult() {
+            closeQuizModal();
+            openModal(selectedQuizResultId);
+        }
+
+        // Initial Load
+        window.onload = () => {
+            loadSolutions();
+            renderCards('all');
+        };
+    </script>
+</body>
+</html>
